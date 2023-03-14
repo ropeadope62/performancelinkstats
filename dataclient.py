@@ -1,6 +1,6 @@
 import datetime
 from iracingdataapi.client import irDataClient
-irclient = irDataClient(username='davechadwick@gmail.com', password='@Finnegan2022@')
+irclient = irDataClient(username='', password='')
 global api
 api = irclient
 
