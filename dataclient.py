@@ -1,7 +1,11 @@
 import datetime
 from iracingdataapi.client import irDataClient
-irclient = irDataClient(username='davechadwick@gmail.com', password='@Finnegan2022@')
-api = irclient
+
+def dataclient(): 
+    irclient = irDataClient(username='davechadwick@gmail.com', password='@Finnegan2022@')
+    global api
+    api = irclient
+
 
 def convtime(ms):
     delta = datetime.timedelta(milliseconds=(ms)).total_seconds()

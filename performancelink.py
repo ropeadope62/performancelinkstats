@@ -8,7 +8,8 @@ import asyncio
 from redbot.core.utils.chat_formatting import (bold, box, humanize_list, humanize_number, pagify)
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.predicates import MessagePredicate
-from dataclient import * 
+from iracingdataapi.client import irDataClient
+from dataclient import dataclient, lookup_driver, get_roster
 
 class PerformanceLinkStats(commands.Cog):
     """Get Performance Link League stats. """
