@@ -1,4 +1,4 @@
-from .performancelink import PerformanceLinkStats
+from performancelink import PerformanceLinkStats
 
 async def setup(bot):
     bot.add_cog(PerformanceLinkStats(bot))
