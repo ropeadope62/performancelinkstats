@@ -1,0 +1,18 @@
+{
+  "author": [
+    "ropeadope62"
+  ],
+  "bot_version": [
+    0,
+    1,
+    1
+  ],
+  "description": "Performance Link Stats",
+  "hidden": false,
+  "install_msg": "Installed. ",
+  "requirements": [],
+  "tags": [
+    "Performance Link"
+  ],
+  "end_user_data_statement": "No data is stored."
+}
