@@ -8,8 +8,7 @@ import asyncio
 from redbot.core.utils.chat_formatting import (bold, box, humanize_list, humanize_number, pagify)
 from redbot.core.utils.menus import DEFAULT_CONTROLS, menu
 from redbot.core.utils.predicates import MessagePredicate
-from iracingdataapi.client import irDataClient
-from dataclient import dataclient, lookup_driver, get_roster
+from .dataclient import api, lookup_driver, recentincidents, get_roster, get_seasons, get_seasonstandings
 
 class PerformanceLinkStats(commands.Cog):
     """Get Performance Link League stats. """
@@ -35,12 +34,37 @@ class PerformanceLinkStats(commands.Cog):
         self.config.register_user(**default_user)
         self.config.register_guild(**default_guild)
         self.config.register_global(**default_global)
-
-    @commands.guild_only()
     @commands.group()
     async def stats(self, ctx):
         """Admin functions for Performance Link Stats."""
         # Reward tokens or adjust module settings
+
+    @stats.command()
+    async def roster(self, ctx: commands.Context, league_id=8804):
+        """Get Active League Roster."""
+        
+        roster_data = get_roster(league_id)
+        await ctx.send(roster_data)
+    @stats.command()
+    async def seasons(self, ctx: commands.Context, league_id=8804):
+        """Get League Seasons."""
+        seasons_data = get_seasons(league_id)
+        await ctx.send(seasons_data)
+
+    @stats.command()
+    async def standings(self, ctx: commands.Context, season_number: int, league_id=8804):
+        """Get League Standings."""
+        
+        season_standings = get_seasonstandings(season_number, league_id)
+        await ctx.send(season_standings)
+        
+    @checks.mod_or_permissions(manage_guild=True)
+    @stats.command()
+    async def admin(self, ctx):
+        """Admin functions for Performance Link Stats."""
+        # Reward tokens or adjust module settings
+
+        guild_data = await self.config.guild(ctx.guild).all()
         if ctx.invoked_subcommand is None:
             guild_data = await self.config.guild(ctx.guild).all()
         if not guild_data["channels"]:
@@ -60,14 +84,7 @@ class PerformanceLinkStats(commands.Cog):
 
         for page in pagify(msg, delims=["\n"]):
             await ctx.send(box(page, lang="ini"))
-
-
-    @stats.command()
-    async def roster(self, ctx: commands.Context, league_id=8804):
-        """Get League Roster."""
-        
-        roster_data = api.get_roster(league_id)
-        await ctx.send(roster_data)
+    
 
     @checks.mod_or_permissions(manage_guild=True)
     @stats.command()
@@ -106,30 +123,5 @@ class PerformanceLinkStats(commands.Cog):
 
         await ctx.send(bold(message))
 
-def convtime(ms):
-    delta = datetime.timedelta(milliseconds=(ms)).total_seconds()
-    return delta
 
-def lookup_driver(displayname):
-    driver_id = api.lookup_drivers(displayname)[0]['cust_id']
-    return driver_id   
-
-def recentincidents(displayname):
-    driver_id = lookup_driver(displayname)
-    recentraces = api.stats_member_recent_races(driver_id)
-    incidents = 0
-    for race in recentraces['races']:
-        incidents += race['incidents']
-    return incidents
-
-def get_roster(league_id=8804): 
-    roster = []
-    for eachdriver in api.league_get(league_id)['roster']:
-        roster.append(tuple((eachdriver['display_name'], eachdriver['car_number'])))
-    return roster
-        
-def get_seasons(league_id=8804):
-    seasons = []
-    for eachseason in api.league_seasons(league_id)['seasons']:
-        seasons.append(tuple((eachseason['season_name'], eachseason['season_id'])))
-    return seasons
+    

@@ -1,10 +1,8 @@
 import datetime
 from iracingdataapi.client import irDataClient
-
-def dataclient(): 
-    irclient = irDataClient(username='davechadwick@gmail.com', password='@Finnegan2022@')
-    global api
-    api = irclient
+irclient = irDataClient(username='davechadwick@gmail.com', password='@Finnegan2022@')
+global api
+api = irclient
 
 
 def convtime(ms):
@@ -34,3 +32,11 @@ def get_seasons(league_id=8804):
     for eachseason in api.league_seasons(league_id)['seasons']:
         seasons.append(tuple((eachseason['season_name'], eachseason['season_id'])))
     return seasons
+
+def get_seasonstandings(season_number, league_id=8804):
+    season_id = get_seasons(8804)
+    season_id = season_id[season_number - 1][1]
+    standings = []
+    for eachdriver in api.league_season_standings(league_id=league_id, season_id=season_id)['standings']['driver_standings']:
+        standings.append(tuple((eachdriver['rownum'], eachdriver['driver']['display_name'])))
+    return standings
